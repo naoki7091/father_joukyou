@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>父専用 病歴就労状況申立書</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        #formContainer {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .entry {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+        }
+
+        .entry h3 {
+            border-bottom: 1px solid #e1e1e1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="formContainer">
+        <!-- 初期の入力項目1 -->
+        <div class="entry" id="entry1">
+            <h3>1</h3>
+            <label>受診断日付</label>
+            <select>
+                <!-- <option>昭和</option> -->
+                <!-- <option>平成</option> -->
+                <option>令和</option>
+            </select>
+            <input type="text" placeholder="〇年〇月〇日"> から
+            <select>
+                <!-- <option>昭和</option> -->
+                <!-- <option>平成</option> -->
+                <option>令和</option>
+            </select>
+            <input type="text" placeholder="〇年〇月〇日"> まで
+            <br>
+            <br>
+            <label>病院名</label>
+            <textarea class = "Name"></textarea>
+            <label>発病した時の状態と初診までの間の状況</label>
+            <textarea class="joukyou"></textarea>
+        </div>
+    </div>
+
+    <button onclick="addEntry()">項目を追加</button>
+
+    <button onclick="submitForm()">送信</button>
+
+    <script>
+        // 項目の追加関数
+        function addEntry() {
+            const container = document.getElementById('formContainer');
+            const newEntry = document.createElement('div');
+            const count = container.children.length + 1;
+
+            newEntry.className = "entry";
+            newEntry.innerHTML = `
+                <h3>${count}</h3>
+                <label>受診断日付</label>
+                <select>
+                    // <option>昭和</option>
+                    // <option>平成</option>
+                    <option>令和</option>
+                </select>
+                <input type="text" placeholder="〇年〇月〇日"> から
+                <select>
+                    <option>昭和</option>
+                    <option>平成</option>
+                    <option>令和</option>
+                </select>
+                <input type="text" placeholder="〇年〇月〇日"> まで
+                <br>
+                <br>
+                <label>病院名</label>
+                <textarea class = "Name"></textarea>
+                <label>この期間の状況</label>
+                <textarea class="joukyou"></textarea>
+            `;
+
+            container.appendChild(newEntry);
+        }
+
+
+    function submitForm() {
+        let output = '';
+        const entries = document.querySelectorAll('.entry');
+
+        entries.forEach((entry, index) => {
+            output += `項目 ${index + 1}\n`;
+            output += '受診断日付: ';
+            output += entry.querySelectorAll('select')[0].value + ' ';
+            output += entry.querySelectorAll('input')[0].value + ' から ';
+            output += entry.querySelectorAll('select')[1].value + ' ';
+            output += entry.querySelectorAll('input')[1].value + ' まで\n';
+            output += '病院名: ' + entry.querySelector('textarea.Name').value + '\n\n'; // 変更点
+            output += '状況: ' + entry.querySelector('textarea.joukyou').value + '\n\n'; // 変更点
+        });
+
+        const blob = new Blob([output], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = '病歴就労状況申立書.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    </script>
+</body>
+</html>

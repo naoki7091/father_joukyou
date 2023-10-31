@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>障害認定日と就労状況申立書</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        input[type="text"], 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="formContainer">
+        <!-- 初期の入力項目1 -->
+        <div class="entry" id="entry1">
+            <h3>1</h3>
+
+            <label>障害認定日</label>
+            <select>
+                <!-- <option>昭和</option> -->
+                <!-- <option>平成</option> -->
+                <option>令和</option>
+            </select>
+            <input type="text" placeholder="〇年〇月〇日">
+            <br>
+
+            <label>職種（仕事の内容）</label>
+            <textarea></textarea>
+            <br>
+
+            <label>通勤方法</label>
+            <textarea></textarea>
+            <br>
+
+            <label>通勤時間（片道）</label>
+            <input type="text" placeholder="〇時間〇分">
+            <br>
+
+            <label>出勤日数</label>
+            <input type="text" placeholder="〇日">
+            <br>
+
+            <label>仕事中や仕事が終わった時の体の調子について</label>
+            <textarea></textarea>
+            <br>
+
+            <label>現在の状況</label>
+            <br>
+            <label>就労していない理由をすべて選択してください</label>
+            <br>
+            <input type="checkbox" id="reason1" name="reason1" value="体力に自信がないから">
+            <label for="reason1">1.体力に自信がないから</label>
+            <br>
+            <input type="checkbox" id="reason2" name="reason2" value="医師から働くことを止められているから">
+            <label for="reason2">2.医師から働くことを止められているから</label>
+            <br>
+            <input type="checkbox" id="reason3" name="reason3" value="働く意欲がないから">
+            <label for="reason3">3.働く意欲がないから</label>
+            <br>
+            <input type="checkbox" id="reason4" name="reason4" value="働きたいが適切な職場がないから">
+            <label for="reason4">4.働きたいが適切な職場がないから</label>
+            <br>
+            <input type="checkbox" id="reason5" name="reason5" value="その他">
+            <label for="reason5">5.その他</label>
+            <br>
+
+            <label>その他の場合はこちらに記入</label>
+            <textarea></textarea>
+            <br>
+
+            <label>日常生活で不便に感じていること</label>
+            <textarea></textarea>
+            <br>
+        </div>
+    </div>
+
+    <button onclick="submitForm()">送信</button>
+    <script>
+
+        function submitForm() {
+            const formData = {
+                era: document.querySelector("#entry1 select").value,
+                date: document.querySelector("#entry1 input[type='text']").value,
+                jobDescription: document.querySelector("#entry1 textarea").value,
+                commuteMethod: document.querySelector("#entry1 textarea").value,
+                commuteTime: document.querySelector("#entry1 input[type='text']").value,
+                workDays: document.querySelector("#entry1 input[type='text']").value,
+                conditionAfterWork: document.querySelector("#entry1 textarea").value,
+                notWorkingReasons: [],
+                otherReason: document.querySelector("#entry1 textarea").value,
+                dailyInconveniences: document.querySelector("#entry1 textarea").value,
+            };
+        
+            for (let i = 1; i <= 5; i++) {
+                const checkbox = document.getElementById(`reason${i}`);
+                if (checkbox.checked) {
+                    formData.notWorkingReasons.push(checkbox.value);
+                }
+            }
+        
+            // フォームのデータをテキストとして整形
+            let output = `障害認定日: ${formData.era} ${formData.date}\n`;
+            output += `職種: ${formData.jobDescription}\n`;
+            output += `通勤方法: ${formData.commuteMethod}\n`;
+            output += `通勤時間: ${formData.commuteTime}\n`;
+            output += `出勤日数: ${formData.workDays}\n`;
+            output += `仕事後の体調: ${formData.conditionAfterWork}\n`;
+            output += `就労していない理由: ${formData.notWorkingReasons.join(", ")}\n`;
+            if (formData.otherReason) {
+                output += `その他の理由: ${formData.otherReason}\n`;
+            }
+            output += `日常生活での不便: ${formData.dailyInconveniences}`;
+        
+            // テキストをダウンロードするためのBlobを生成
+            const blob = new Blob([output], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '病歴就労状況申立書.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+    
+</body>
+</html>
